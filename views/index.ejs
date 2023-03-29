@@ -1,0 +1,17 @@
+<%- include('partials/header') -%>
+
+<h1 class="text-4xl">File manager</h1>
+
+<% if (locals.isAuthenticated) { %>
+    <p>You are logged in. </p><br/>
+    <p><a href="/profile" class="underline">View your profile</a>.</p><br/>
+    <p><a href="/readDoc" class="underline">Read Document</a>.</p><br/>
+    <p><a href="/editDoc" class="underline">Edit Document</a>.</p><br/>
+    <p><a href="/deleteDoc" class="underline">Delete Document</a>.</p><br/>
+    <p><a href="/viewFolder" class="underline">View Folder</a>.</p><br/>
+    <p><a href="/deleteFolder" class="underline">Delete Folder</a>.</p><br/>
+<% } else { %>
+    <p>You are not logged in. <a href="/login" class="underline">Login</a>.</p>
+<% } %>
+
+<%- include('partials/footer') -%>
