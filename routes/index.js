@@ -1,15 +1,35 @@
 var router = require('express').Router();
 const { requiresAuth } = require('express-openid-connect');
-const fgaClient = require('./openFga');
+const checkUserRole = require('./authorize');
 
-function renderResponse(res, allowed, action){
-  allowed ? res.render('allowed', { action }) :   res.render('unauthorized', { action })
+function getAccessToken(headers) {
+  return (headers['x-forwarded-access-token'] || headers['X-Forwarded-Access-Token'])
+}
+
+
+function isAuthorized(role) {
+  return (req, res, next) => {
+    const accessToken = getAccessToken(req.headers);
+    const isAuthorizedUser = checkUserRole(accessToken, role);
+    isAuthorizedUser ? next() : renderResponse(res, false, role)
+  }
+}
+
+function renderResponse(res, allowed, action) {
+  allowed ? res.render('allowed', { action }) : res.render('unauthorized', { action })
 }
 
 router.get('/', function (req, res, next) {
   res.render('index', {
-    title: 'Auth0 Webapp sample Nodejs',
-    isAuthenticated: req.oidc.isAuthenticated()
+    title: 'Webapp sample Nodejs',
+    isAuthenticated: !!getAccessToken(req.headers)
+  });
+});
+
+router.get('/home', function (req, res, next) {
+  res.render('index', {
+    title: 'Webapp sample Nodejs',
+    isAuthenticated: !!getAccessToken(req.headers)
   });
 });
 
@@ -21,69 +41,17 @@ router.get('/profile', requiresAuth(), function (req, res, next) {
 });
 
 
-router.get('/readDoc', requiresAuth(), async function (req, res, next) {
-  try{
-    const {allowed} = await fgaClient.checkUserAccess(
-      `user:${req.oidc.user.email}`,
-      "can_read",
-      "doc:A"
-      );
-      renderResponse(res, allowed, "Read Document")
-  }catch(err){
-    console.error(err)
-  } 
+router.get('/api/admin', isAuthorized('admin'), async function (req, res, next) {
+  renderResponse(res, true, "admin")
 });
 
-router.get('/editDoc', requiresAuth(), async function (req, res, next) {
-  try{
-    const {allowed} = await fgaClient.checkUserAccess(
-      `user:${req.oidc.user.email}`,
-      "can_write",
-      "doc:A"
-      );
-      renderResponse(res, allowed, "Edit Document")
-  }catch(err){
-    console.error(err)
-  } 
+router.get('/api/member', isAuthorized('member'), async function (req, res, next) {
+  renderResponse(res, true, "member")
 });
 
-router.get('/deleteDoc', requiresAuth(), async function (req, res, next) {
-  try{
-    const {allowed} = await fgaClient.checkUserAccess(
-      `user:${req.oidc.user.email}`,
-      "owner",
-      "doc:A"
-      );
-      renderResponse(res, allowed, "Delete Document")
-  }catch(err){
-    console.error(err)
-  } 
+router.get('/api/guest', isAuthorized('guest'), async function (req, res, next) {
+  renderResponse(res, true, "guest")
 });
 
-router.get('/viewFolder', requiresAuth(), async function (req, res, next) {
-  try{
-    const {allowed} = await fgaClient.checkUserAccess(
-      `user:${req.oidc.user.email}`,
-      "viewer",
-      "folder:A"
-      );
-      renderResponse(res, allowed, "View Folder")
-  }catch(err){
-    console.error(err)
-  } 
-});
-
-router.get('/deleteFolder', requiresAuth(), async function (req, res, next) {
-  try{
-    const {allowed} = await fgaClient.checkUserAccess(
-      `user:${req.oidc.user.email}`,
-      "owner",
-      "folder:A"
-      );
-      renderResponse(res, allowed, "Delete folder")
-  }catch(err){
-    console.error(err)
-  } 
-});
 
 module.exports = router;

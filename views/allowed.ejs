@@ -1,6 +1,6 @@
 <%- include('partials/header') -%>
 
 <h1 style="color:green;">Authorized !!</h1>
-<p><b><%= user.email %></b> is allowed to perform the selected action [ <%= action %> ]</p>
+<p><b><%=user && user.email %></b> has access to <%= action %> zone.</p>
 
 <%- include('partials/footer') -%>

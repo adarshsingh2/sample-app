@@ -4,7 +4,7 @@ const http = require('http');
 const logger = require('morgan');
 const path = require('path');
 const router = require('./routes/index');
-const { auth } = require('express-openid-connect');
+//const { auth } = require('express-openid-connect');
 
 const app = express();
 
@@ -28,11 +28,16 @@ if (!config.baseURL && !process.env.BASE_URL && process.env.PORT && process.env.
   config.baseURL = `http://localhost:${port}`;
 }
 
-app.use(auth(config));
+function getUserEmail(headers) {
+  console.log("Request headers -- ", headers)
+  return headers['x-forwarded-email'] || headers['X-Forwarded-Email']
+}
 
-// Middleware to make the `user` object available for all views
+// app.use(auth(config));
+
+// // Middleware to make the `user` object available for all views
 app.use(function (req, res, next) {
-  res.locals.user = req.oidc.user;
+  res.locals.user = {email:getUserEmail(req.headers)};
   next();
 });
 

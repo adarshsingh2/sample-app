@@ -1,17 +1,49 @@
 <%- include('partials/header') -%>
 
-<h1 class="text-4xl">File manager</h1>
+    <h1 class="text-4xl">Information Portal</h1>
 
-<% if (locals.isAuthenticated) { %>
-    <p>You are logged in. </p><br/>
-    <p><a href="/profile" class="underline">View your profile</a>.</p><br/>
-    <p><a href="/readDoc" class="underline">Read Document</a>.</p><br/>
-    <p><a href="/editDoc" class="underline">Edit Document</a>.</p><br/>
-    <p><a href="/deleteDoc" class="underline">Delete Document</a>.</p><br/>
-    <p><a href="/viewFolder" class="underline">View Folder</a>.</p><br/>
-    <p><a href="/deleteFolder" class="underline">Delete Folder</a>.</p><br/>
-<% } else { %>
-    <p>You are not logged in. <a href="/login" class="underline">Login</a>.</p>
-<% } %>
+    <% if (locals.isAuthenticated) { %>
+        <style>
+            .button {
+                background-color: #4CAF50;
+                /* Green */
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                width: 400px;
+                height: 60px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+            }
 
-<%- include('partials/footer') -%>
+            .button1 {
+                background-color: white;
+                color: black;
+                border: 2px solid #4CAF50;
+            }
+
+            .button2 {
+                background-color: white;
+                color: black;
+                border: 2px solid #008CBA;
+            }
+
+            .button3 {
+                background-color: white;
+                color: black;
+                border: 2px solid #f44336;
+            }
+        </style>
+        </br>
+        <p><button class="button button1" onclick="window.location.href='/api/guest';">Guests</button></p>
+        <p><button class="button button2" onclick="window.location.href='/api/member';">Members</button></p>
+        <p><button class="button button3" onclick="window.location.href='/api/admin';">Admin Zone</button></p>
+        <% } else { %>
+            <p>You are not logged in. <a href="/login" class="underline">Login</a>.</p>
+            <% } %>
+
+                <%- include('partials/footer') -%>
