@@ -1,6 +1,6 @@
 const jwt_decode = require("jwt-decode");
 
-module.exports = (accessToken, role) => {
+let checkUserRole = (accessToken, role) => {
     try {
         const payload = jwt_decode(accessToken);
         const userRoles = payload && payload.realm_access && payload.realm_access.roles;
@@ -13,3 +13,7 @@ module.exports = (accessToken, role) => {
         return false;
     }
 }
+
+let getTokenPayload = token => jwt_decode(token) ;
+
+module.exports = {checkUserRole, getTokenPayload}
