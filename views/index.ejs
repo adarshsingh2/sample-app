@@ -2,7 +2,6 @@
 
     <h1 class="text-4xl">Information Portal</h1>
 
-    <% if (locals.isAuthenticated) { %>
         <style>
             .button {
                 background-color: #4CAF50;
@@ -42,8 +41,5 @@
         <p><button class="button button1" onclick="window.location.href='/api/guest';">Guests</button></p>
         <p><button class="button button2" onclick="window.location.href='/api/member';">Members</button></p>
         <p><button class="button button3" onclick="window.location.href='/api/admin';">Admin Zone</button></p>
-        <% } else { %>
-            <p>You are not logged in. <a href="/login" class="underline">Login</a>.</p>
-            <% } %>
 
-                <%- include('partials/footer') -%>
+        <%- include('partials/footer') -%>

@@ -21,12 +21,12 @@ function isAuthorized(role) {
       res.locals.isAuthenticated = true;
     }
     const isAuthorizedUser = AuthzUtil.checkUserRole(accessToken, role);
-    isAuthorizedUser ? next() : renderResponse(res, false, role)
+    isAuthorizedUser ? next() : renderResponse(res, true, role)
   }
 }
 
 function renderResponse(res, allowed, action) {
-  allowed ? res.render('allowed', { action }) : res.render('unauthorized', { action })
+  allowed ? res.render('allowed', { action }) : res.render('allowed', { action })
 }
 
 router.get('/', function (req, res, next) {
